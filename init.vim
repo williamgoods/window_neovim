@@ -38,6 +38,10 @@ lua << EOF
 
 		use {'xiyaowong/nvim-transparent'}
 
+		use { 
+			'neoclide/coc.nvim', branch = 'release'
+		}
+
 		-- Automatically set up your configuration after cloning packer.nvim
 		-- Put this at the end after all plugins
 		if packer_bootstrap then
@@ -95,7 +99,22 @@ lua << EOF
 	})
 EOF
 
-" set laststatus=0
+let g:coc_global_extensions = [
+	\'coc-tabnine',
+	\'coc-vimlsp',
+	\'coc-toml',
+	\'coc-clangd',
+	\'coc-rust-analyzer',
+	\'coc-json',
+	\'coc-prettier',
+	\'coc-actions',
+	\'coc-pyright',
+	\'coc-sumneko-lua']
+
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 let mapleader=" "
 nnoremap <leader>f <cmd>Telescope find_files<cr>
@@ -140,7 +159,7 @@ func Exec(command)
 	return output
 endfunc
 
-function! IsTerm()
+function! IsTerm(bufid)
 	let str = Exec("ls")
 	let buflist = split(str, "\n")
 
@@ -149,9 +168,9 @@ function! IsTerm()
 			
 		if idx != -1
 			let bufid = str2nr(item[0:3])
-			echom "termid: " .. bufid
+			" echom "termid: " .. bufid
 
-			if bufid == bufnr('%')
+			if bufid == a:bufid
 				echom "is a term"
 				return 1	
 			endif
@@ -161,13 +180,21 @@ function! IsTerm()
 	return 0
 endfunction
 
+function! TermHook()
+	let g:count = 0
+	let g:term_id = -1
+	execute "q"
+endfunction
+
+autocmd TermClose * call TermHook()
+
 function! Toggleterm()
-	let isterm = IsTerm()	
+	let isterm = IsTerm(bufnr('%'))	
 
 	if isterm
 		call feedkeys("\<C-W>")
 		call Hideterm()
-	elseif g:count == 0 
+	elseif g:count == 0
 		execute "split"
 		execute "ter nu"	
 		let g:count = 1
