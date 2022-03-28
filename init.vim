@@ -60,9 +60,9 @@ lua << EOF
 			'williamboman/nvim-lsp-installer',
 		}
 
-		use 'Mofiqul/dracula.nvim'
+		use 'arcticicestudio/nord-vim'
 
-		use {'ojroques/nvim-hardline'}
+		use 'Mofiqul/dracula.nvim'
 
 		-- Automatically set up your configuration after cloning packer.nvim
 		-- Put this at the end after all plugins
@@ -75,10 +75,10 @@ EOF
 lua << EOF
 	local configs = require'nvim-treesitter.configs'
 	configs.setup {
-	  ensure_installed = "maintained",
-	  highlight = {
-		enable = true,
-	  }
+		ensure_installed = "maintained",
+		highlight = {
+			enable = true,
+		}
 	}
 
 	local Path = require('plenary.path')
@@ -96,20 +96,11 @@ lua << EOF
 		autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
 	})
 
-	-- require("toggleterm").setup{
-	-- 	open_mapping = [[<A-i>]],
-	-- 	shell = 'nu',
-	-- 	direction = 'horizontal'
-	-- }
-
 	require('nvim-autopairs').setup{}
 
 	require("transparent").setup({
-	  enable = true, -- boolean: enable transparent
-	  extra_groups = { -- table/string: additional groups that should be clear
-		-- In particular, when you set it to 'all', that means all avaliable groups
-
-		-- example of akinsho/nvim-bufferline.lua
+	  enable = true,
+	  extra_groups = {
 		"BufferLineTabClose",
 		"BufferlineBufferSelected",
 		"BufferLineFill",
@@ -117,10 +108,8 @@ lua << EOF
 		"BufferLineSeparator",
 		"BufferLineIndicatorSelected",
 	  },
-	  exclude = {}, -- table: groups you don't want to clear
+	  exclude = {},
 	})
-
-	require('hardline').setup {}
 EOF
 
 lua << EOF
@@ -180,7 +169,7 @@ lua << EOF
 		}
 	})
 
-	local languages_installer = {"pyright", "jedi_language_server", "pylsp"}
+	local languages_installer = {"pylsp"}
 
 	for _, language in ipairs(languages_installer) do
 		local server_available, requested_server = lsp_installer_servers.get_server(language)
@@ -217,8 +206,11 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 let mapleader=" "
+
 nnoremap <leader>f <cmd>Telescope find_files<cr>
-nnoremap <leader>b <cmd>Telescope buffers<cr>
+nnoremap <leader>f <cmd>Telescope buffers<cr>
+
+
 nnoremap <leader>s :wa<cr>
 nnoremap Q :qa<cr>
 nnoremap <A-j> :bp<cr>
@@ -238,16 +230,16 @@ tnoremap <esc> <C-\><C-N>
 
 autocmd TermOpen * setlocal scrollback=-1
 
- syntax enable
+syntax enable
 " for vim 7
- set t_Co=256
+set t_Co=256
 
 " for vim 8
 if (has("termguicolors"))
 	set termguicolors
 endif
 
-colorscheme dracula
+colorscheme nord
 
 let g:count = 0
 let g:term_id = -1
@@ -326,7 +318,7 @@ function! CloseTerm()
 	endif 
 
 	execute "qa"
-endfunction	
+endfunction
 
 tnoremap <Esc> <C-\><C-n>
 
