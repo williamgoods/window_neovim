@@ -42,6 +42,24 @@ lua << EOF
 			'neoclide/coc.nvim', branch = 'release'
 		}
 
+		use {
+			'neovim/nvim-lspconfig',
+			'hrsh7th/cmp-nvim-lsp',
+			'hrsh7th/cmp-buffer',
+			'hrsh7th/cmp-path',
+			'hrsh7th/cmp-cmdline',
+			'hrsh7th/nvim-cmp'
+		}
+
+		use {
+			'SirVer/ultisnips',
+			'quangnguyen30192/cmp-nvim-ultisnips'		
+		}
+
+		use {
+			'williamboman/nvim-lsp-installer',
+		}
+
 		-- Automatically set up your configuration after cloning packer.nvim
 		-- Put this at the end after all plugins
 		if packer_bootstrap then
@@ -99,8 +117,85 @@ lua << EOF
 	})
 EOF
 
+lua << EOF
+	local cmp = require'cmp'
+
+	cmp.setup({
+		snippet = {
+			expand = function(args)
+			  -- For `vsnip` user.
+			  -- vim.fn["vsnip#anonymous"](args.body)
+
+			  -- For `luasnip` user.
+			  -- require('luasnip').lsp_expand(args.body)
+
+			  -- For `ultisnips` user.
+				vim.fn["UltiSnips#Anon"](args.body)
+			end,
+		},
+		mapping = {
+			['<Tab>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+			['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+			['<C-d>'] = cmp.mapping.scroll_docs(-4),
+			['<C-f>'] = cmp.mapping.scroll_docs(4),
+			['<A-Space>'] = cmp.mapping.complete(),
+			['<C-e>'] = cmp.mapping.close(),
+			['<CR>'] = cmp.mapping.confirm({
+				behavior = cmp.ConfirmBehavior.Replace,
+				select = true,
+			})
+		},
+		sources = {
+			{ name = 'nvim_lsp' },
+
+			-- For vsnip user.
+			-- { name = 'vsnip' },
+
+			-- For luasnip user.
+			-- { name = 'luasnip' },
+
+			-- For ultisnips user.
+			{ name = 'ultisnips' },
+			{ name = 'buffer' },
+			{ name = "crates" },
+		}
+	})
+
+	local lsp_installer = require("nvim-lsp-installer")
+	local lsp_installer_servers = require'nvim-lsp-installer.servers'
+
+	lsp_installer.settings({
+		ui = {
+			icons = {
+				server_installed = "✓",
+				server_pending = "➜",
+				server_uninstalled = "✗"
+			}
+		}
+	})
+
+	local languages_installer = {"pyright", "jedi_language_server", "pylsp"}
+
+	for _, language in ipairs(languages_installer) do
+		local server_available, requested_server = lsp_installer_servers.get_server(language)
+		if server_available then
+			requested_server:on_ready(function ()
+				local opts = {}
+				requested_server:setup(opts)
+			end)
+			if not requested_server:is_installed() then
+				-- Queue the server to be installed
+				requested_server:install()
+			end
+		end
+	end
+
+	local lsp_installer_path = vim.fn.stdpath("data") .. "\\lsp_servers\\"
+
+	require'lspconfig'.pylsp.setup{}
+EOF
+
 let g:coc_global_extensions = [
-	\'coc-tabnine',
 	\'coc-vimlsp',
 	\'coc-toml',
 	\'coc-clangd',
@@ -108,7 +203,6 @@ let g:coc_global_extensions = [
 	\'coc-json',
 	\'coc-prettier',
 	\'coc-actions',
-	\'coc-pyright',
 	\'coc-sumneko-lua']
 
 
