@@ -60,6 +60,10 @@ lua << EOF
 			'williamboman/nvim-lsp-installer',
 		}
 
+		use 'Mofiqul/dracula.nvim'
+
+		use {'ojroques/nvim-hardline'}
+
 		-- Automatically set up your configuration after cloning packer.nvim
 		-- Put this at the end after all plugins
 		if packer_bootstrap then
@@ -115,6 +119,8 @@ lua << EOF
 	  },
 	  exclude = {}, -- table: groups you don't want to clear
 	})
+
+	require('hardline').setup {}
 EOF
 
 lua << EOF
@@ -241,7 +247,7 @@ if (has("termguicolors"))
 	set termguicolors
 endif
 
-colorscheme OceanicNext
+colorscheme dracula
 
 let g:count = 0
 let g:term_id = -1
