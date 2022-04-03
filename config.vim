@@ -11,7 +11,6 @@ set mouse=a
 set relativenumber
 
 set clipboard+=unnamedplus
-set termguicolors
 
 lua << EOF
 	local fn = vim.fn
@@ -29,16 +28,13 @@ lua << EOF
 			'Shatur/neovim-session-manager',
 			requires = { {'nvim-lua/plenary.nvim'} }
 		}
+
 		use {
 			'nvim-telescope/telescope.nvim',
 			requires = { {'nvim-lua/plenary.nvim'} }
 		}
 
-		-- use {'akinsho/toggleterm.nvim'}
-
 		use {'windwp/nvim-autopairs'}
-
-		use {'mhartington/oceanic-next'}
 
 		use {'xiyaowong/nvim-transparent'}
 
@@ -62,11 +58,7 @@ lua << EOF
 			'williamboman/nvim-lsp-installer',
 		}
 
-		use 'arcticicestudio/nord-vim'
-
-		use 'Mofiqul/dracula.nvim'
-
-		use { 'lalitmee/cobalt2.nvim', requires = 'tjdevries/colorbuddy.nvim' }
+		use 'projekt0n/github-nvim-theme'
 
 		-- Automatically set up your configuration after cloning packer.nvim
 		-- Put this at the end after all plugins
@@ -121,12 +113,9 @@ syntax enable
 " for vim 7
 set t_Co=256
 
-" for vim 8
-if (has("termguicolors"))
-	set termguicolors
-endif
+set termguicolors
 
-lua require('colorbuddy').colorscheme('cobalt2')
+colorscheme github_light
 
 for config_file in g:config_files
 	execute 'source ' .. g:neovimconfig .. '/' .. config_file

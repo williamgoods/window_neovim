@@ -9,16 +9,31 @@ func Exec(command)
 	return output
 endfunc
 
+function CloseTabs(state) 
+    let str = Exec("ls")
+    let buflist = split(str, "\n")
+
+    for item in buflist
+        let idx = stridx(item, a:state)
+
+        if idx != -1 
+            let bufid = str2nr(item[0:3])
+            silent exec "bdelete! " .. bufid    
+            echo "delete buffer " .. bufid
+        endif
+    endfor
+endfunction
+
 function! IsTerm(bufid)
 	let str = Exec("ls")
 	let buflist = split(str, "\n")
 
 	for item in buflist
-		let idx = stridx(item, "term")
+		let idx = stridx(item, "term://")
 			
 		if idx != -1
 			let bufid = str2nr(item[0:3])
-			" echom "termid: " .. bufid
+			echom "termid: " .. bufid
 
 			if bufid == a:bufid
 				echom "is a term"
@@ -40,6 +55,7 @@ autocmd TermClose * call TermHook()
 
 function! Toggleterm()
 	let isterm = IsTerm(bufnr('%'))	
+	echom "isterm: " .. isterm
 
 	if isterm
 		call feedkeys("\<C-W>")
@@ -71,9 +87,11 @@ function! Killterm()
 endfunction
 
 function! CloseTerm()
-	if g:term_id != -1 
-		execute "bdelete! " .. g:term_id
-	endif 
+	call Killterm()
+	call CloseTabs("No Name")
+	" if g:term_id != -1 
+	" 	execute "bdelete! " .. g:term_id
+	" endif 
 
 	execute "qa"
 endfunction

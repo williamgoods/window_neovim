@@ -9,5 +9,3 @@ else
         execute 'source ' .. g:neovimconfig .. '/' .. config_file
     endfor
 endif
-
-
