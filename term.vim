@@ -1,6 +1,7 @@
 
 let g:count = 0
 let g:term_id = -1
+let g:term_win_id = -1
 
 func Exec(command)
 	redir => output
@@ -45,6 +46,13 @@ function! IsTerm(bufid)
 	return 0
 endfunction
 
+" function! IsRunning(buf)
+"     return getbufvar(a:buf, '&buftype') !=# 'terminal' ? 0 :
+"         \ has('terminal') ? term_getstatus(a:buf) =~# 'running' :
+"         \ has('nvim') ? jobwait([getbufvar(a:buf, '&channel')], 0)[0] == -1 :
+"         \ 0
+" endfunction
+
 function! TermHook()
 	let g:count = 0
 	let g:term_id = -1
@@ -65,6 +73,7 @@ function! Toggleterm()
 		execute "ter nu"	
 		let g:count = 1
 		let g:term_id = bufnr('%')
+		let g:term_win_id = win_getid()
 	else 
 		" 如果有终端打开过就将终端重新打开
 		execute "split"
@@ -80,9 +89,11 @@ endfunction
 
 function! Killterm()
 	if g:count == 1
+		nvim_win_close(g:term_win_id, 1)
 		execute "bdelete! " .. g:term_id
 		let g:count = 0
 		let g:term_id = -1
+		let g:term_win_id = -1
 	endif
 endfunction
 
@@ -93,6 +104,7 @@ function! CloseTerm()
 	" 	execute "bdelete! " .. g:term_id
 	" endif 
 
+	execute "LspStop"
 	execute "qa"
 endfunction
 
@@ -104,3 +116,12 @@ tmap <A-k> <esc>:call Killterm()<CR>
 
 nnoremap <leader>qq :call CloseTerm()<cr>
 nnoremap <leader>ss <cmd>:wa<cr>
+
+augroup terminal_settings
+autocmd!
+
+function OnStart()
+    call CloseTabs("No Name")
+endfunction
+
+autocmd VimEnter * nested call OnStart()
