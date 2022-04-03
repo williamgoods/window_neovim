@@ -56,7 +56,6 @@ endfunction
 function! TermHook()
 	let g:count = 0
 	let g:term_id = -1
-	execute "q"
 endfunction
 
 autocmd TermClose * call TermHook()
@@ -89,8 +88,7 @@ endfunction
 
 function! Killterm()
 	if g:count == 1
-		nvim_win_close(g:term_win_id, 1)
-		execute "bdelete! " .. g:term_id
+		execute "bd! " .. g:term_id
 		let g:count = 0
 		let g:term_id = -1
 		let g:term_win_id = -1
@@ -100,9 +98,6 @@ endfunction
 function! CloseTerm()
 	call Killterm()
 	call CloseTabs("No Name")
-	" if g:term_id != -1 
-	" 	execute "bdelete! " .. g:term_id
-	" endif 
 
 	execute "LspStop"
 	execute "qa"
