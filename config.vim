@@ -65,6 +65,10 @@ lua << EOF
 		use 'vim-airline/vim-airline'
 		use 'vim-airline/vim-airline-themes'
 
+		use 'NLKNguyen/papercolor-theme'
+
+		use 'protesilaos/tempus-themes-vim'
+
 		-- Automatically set up your configuration after cloning packer.nvim
 		-- Put this at the end after all plugins
 		if packer_bootstrap then
@@ -73,7 +77,13 @@ lua << EOF
 	end)
 EOF
 
-colorscheme inspired-github
+let g:PaperColor_Theme_Options = {
+  \   'theme': {
+  \     'default': {
+  \       'transparent_background': 1
+  \     }
+  \   }
+  \ }
 
 let mapleader=" "
 
@@ -121,6 +131,10 @@ syntax enable
 set t_Co=256
 
 set termguicolors
+
+" colorscheme PaperColor
+" colorscheme inspired-github
+colorscheme tempus_totus
 
 for config_file in g:config_files
 	execute 'source ' .. g:neovimconfig .. '/' .. config_file
