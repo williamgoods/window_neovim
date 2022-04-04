@@ -120,3 +120,5 @@ function OnStart()
 endfunction
 
 autocmd VimEnter * nested call OnStart()
+
+au ColorScheme * hi Normal ctermbg=none guibg=none

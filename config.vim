@@ -58,7 +58,12 @@ lua << EOF
 			'williamboman/nvim-lsp-installer',
 		}
 
+		use 'mvpopuk/inspired-github.vim'
+
 		use 'projekt0n/github-nvim-theme'
+
+		use 'vim-airline/vim-airline'
+		use 'vim-airline/vim-airline-themes'
 
 		-- Automatically set up your configuration after cloning packer.nvim
 		-- Put this at the end after all plugins
@@ -67,6 +72,8 @@ lua << EOF
 		end
 	end)
 EOF
+
+colorscheme inspired-github
 
 let mapleader=" "
 
@@ -114,8 +121,6 @@ syntax enable
 set t_Co=256
 
 set termguicolors
-
-colorscheme github_light
 
 for config_file in g:config_files
 	execute 'source ' .. g:neovimconfig .. '/' .. config_file
